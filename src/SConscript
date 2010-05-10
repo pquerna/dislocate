@@ -15,11 +15,20 @@
 
 Import("env")
 
+env.Append(CPPPATH=['extern/http-parser/'])
+
+lenv = env.Clone()
+
+hp = lenv.StaticLibrary('http-parser', source=['extern/http-parser/http_parser.c'])
+
 lenv = env.Clone()
 sources = Split("""
   dislocated.cpp
   core.cpp
 """)
+
+lenv.Append(LIBS=[hp])
+
 dislocated = lenv.Program("dislocated", source=sources)
 
 targets = [dislocated]

@@ -27,8 +27,6 @@
 #include "dl_version.h"
 #include "dl_core.h"
 
-
-
 static void show_version()
 {
 #ifdef DL_IS_DEV

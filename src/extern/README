@@ -1,0 +1,4 @@
+http-parser (HEAD)
+  MIT
+  http://github.com/ry/http-parser
+  Used to parse incoming HTTP requests
