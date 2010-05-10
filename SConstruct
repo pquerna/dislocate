@@ -19,10 +19,12 @@ EnsureSConsVersion(1, 1, 0)
 import os
 import re
 from os.path import join as pjoin
+from site_scons import ac
 
 opts = Variables('build.py')
 
 opts.Add(PathVariable('EV', 'Path to libev', '/usr/local'))
+opts.Add(PathVariable('CURL', 'Path to curl-config', WhereIs('curl-config')))
 
 env = Environment(options=opts,
                   ENV = os.environ.copy(),
@@ -43,7 +45,8 @@ def read_version(prefix, path):
 env['version_major'], env['version_minor'], env['version_patch'] = read_version('DL', 'src/dl_version.h')
 env['version_string'] = "%d.%d.%d"  % (env['version_major'], env['version_minor'], env['version_patch'])
 
-conf = Configure(env, custom_tests = {})
+conf = Configure(env, custom_tests = {'CheckCurlPrefix': ac.CheckCurlPrefix,
+                                      'CheckCurlLibs': ac.CheckCurlLibs})
 
 cc = conf.env.WhereIs('/Developer/usr/bin/clang')
 if os.environ.has_key('CC'):
@@ -57,6 +60,27 @@ conf.env.AppendUnique(CPPPATH=pjoin(conf.env['EV'], 'include'))
 if not conf.CheckLibWithHeader('ev', 'ev++.h', 'C++'):
   print 'Did not find libev in %s, exiting!' % (conf.env['EV'])
   Exit(1)
+
+cprefix = conf.CheckCurlPrefix()
+if not cprefix[0]:
+  Exit("Error: Unable to detect curl prefix")
+
+clibs = conf.CheckCurlLibs()
+if not clibs[0]:
+  Exit("Error: Unable to detect curl libs")
+
+conf.env.AppendUnique(CPPPATH = [pjoin(cprefix[1], "include"), "#"])
+
+# TOOD: this is less than optimal, since curl-config polutes this quite badly :(
+t = clibs[1].replace('-g0 ', '')
+t = t.replace('-Wno-system-headers ', '')
+t = t.replace('-Os ', '')
+d = conf.env.ParseFlags(t)
+conf.env.MergeFlags(d)
+
+release=False
+if not release:
+  conf.env.AppendUnique(CPPFLAGS = ["-Wall", '-O0', '-ggdb'])
 
 # this is needed on solaris because of its dumb library path issues
 conf.env.AppendUnique(RPATH = conf.env.get('LIBPATH'))
