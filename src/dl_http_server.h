@@ -15,31 +15,33 @@
  * limitations under the License.
  */
 
-#include "dl_core.h"
-#include "dl_http_server.h"
+#ifndef _dl_http_server_h_
+#define _dl_http_server_h_
 
-dlCore::dlCore()
+#include <vector>
+#include <string>
+#include "http_parser.h"
+
+class dlHttpPeer
 {
+private:
+  std::string m_address;
+  int m_port;
+  http_parser m_parser;
+  bool m_authenticated;
 
-}
+public:
+  dlHttpPeer();
+  ~dlHttpPeer();
+};
 
-dlCore::~dlCore()
+class dlHttpServer
 {
-  
-}
+private:
+  std::vector<dlHttpPeer> m_clients;
+public:
+  dlHttpServer();
+  ~dlHttpServer();
+};
 
-bool dlCore::config(dl_serv_conf_t *conf)
-{
-  return true;
-}
-
-void dlCore::start()
-{
-  dlHttpServer *http = new dlHttpServer();
-  delete http;
-}
-
-void dlCore::shutdown()
-{
-
-}
+#endif

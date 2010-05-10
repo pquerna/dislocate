@@ -15,31 +15,24 @@
  * limitations under the License.
  */
 
-#include "dl_core.h"
 #include "dl_http_server.h"
 
-dlCore::dlCore()
+
+dlHttpPeer::dlHttpPeer()
+{
+  http_parser_init(&m_parser, HTTP_REQUEST);
+}
+
+dlHttpPeer::~dlHttpPeer()
 {
 
 }
 
-dlCore::~dlCore()
+dlHttpServer::dlHttpServer()
+{
+}
+
+dlHttpServer::~dlHttpServer()
 {
   
-}
-
-bool dlCore::config(dl_serv_conf_t *conf)
-{
-  return true;
-}
-
-void dlCore::start()
-{
-  dlHttpServer *http = new dlHttpServer();
-  delete http;
-}
-
-void dlCore::shutdown()
-{
-
 }

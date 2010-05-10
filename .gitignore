@@ -2,3 +2,7 @@
 *.a
 *.pyc
 build.py
+.scon*
+src/dislocated
+config.log
+ 

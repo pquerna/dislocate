@@ -25,6 +25,7 @@ lenv = env.Clone()
 sources = Split("""
   dislocated.cpp
   core.cpp
+  http_server.cpp
 """)
 
 lenv.Append(LIBS=[hp])
