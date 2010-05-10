@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-#include <string>
-
-#include "dl_server.h"
 
 #ifndef _dl_core_h_
 #define _dl_core_h_
+
+#include "dl_server.h"
+#include <ev++.h>
 
 class dlCore {
 private:

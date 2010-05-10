@@ -22,6 +22,8 @@ from os.path import join as pjoin
 
 opts = Variables('build.py')
 
+opts.Add(PathVariable('EV', 'Path to libev', '/usr/local'))
+
 env = Environment(options=opts,
                   ENV = os.environ.copy(),
                   tools=['default'])
@@ -49,6 +51,12 @@ if os.environ.has_key('CC'):
 
 if cc:
   conf.env['CC'] = cc
+
+conf.env.AppendUnique(LIBPATH=pjoin(conf.env['EV'], 'lib'))
+conf.env.AppendUnique(CPPPATH=pjoin(conf.env['EV'], 'include'))
+if not conf.CheckLibWithHeader('ev', 'ev++.h', 'C++'):
+  print 'Did not find libev in %s, exiting!' % (conf.env['EV'])
+  Exit(1)
 
 # this is needed on solaris because of its dumb library path issues
 conf.env.AppendUnique(RPATH = conf.env.get('LIBPATH'))

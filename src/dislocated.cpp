@@ -20,11 +20,14 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <assert.h>
 
 #include "dl_server.h"
 #include "dl_tunables.h"
 #include "dl_version.h"
 #include "dl_core.h"
+
+
 
 static void show_version()
 {
@@ -35,6 +38,8 @@ static void show_version()
 #endif
   fprintf(stdout, "dislocated - %d.%d.%d%s\n", DL_VERSION_MAJOR,
           DL_VERSION_MINOR, DL_VERSION_PATCH, extra);
+  fprintf(stdout, "  using: \n");
+  fprintf(stdout, "      libev %d.%d\n", ev_version_major(), ev_version_minor());
   exit(EXIT_SUCCESS);
 }
 
@@ -66,6 +71,10 @@ int main(int argc, char *const *argv)
   int c;
   int rc;
 
+  assert (("libev version mismatch",
+           ev_version_major () == EV_VERSION_MAJOR
+           && ev_version_minor () >= EV_VERSION_MINOR));
+  
   dl_serv_conf_t *conf = default_config();
   while ((c = getopt(argc, argv, "hV")) != -1) {
     switch (c) {
