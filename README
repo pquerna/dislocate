@@ -1,0 +1,6 @@
+Dislocate - A distributed service locator
+------
+
+Dislocate aims to eliminate the need to configure 'where' a service is 
+available on a network, and enable autodiscovery of new services, and high 
+performance location of these services by clients.
